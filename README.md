@@ -196,4 +196,5 @@ Line item junction table capturing the exact products, historical unit prices, a
 - **Products 1-N Order_Items (`PRODUCTS ||--o{ ORDER_ITEMS`)**: A product can appear across multiple order line items in different customer orders.
 #   K H _ Q R  
  #   K H _ Q R  
+ #   K H _ Q R  
  
