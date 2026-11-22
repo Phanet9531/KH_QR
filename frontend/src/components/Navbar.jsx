@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, Laptop, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, Laptop } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 
 export const Navbar = () => {
@@ -37,17 +37,6 @@ export const Navbar = () => {
               }`}
             >
               Products
-            </Link>
-
-            <Link
-              to="/admin"
-              className={`px-3 py-2 text-sm font-semibold rounded-lg transition ${
-                location.pathname === '/admin'
-                  ? 'text-indigo-600 bg-indigo-50'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              Admin
             </Link>
 
             {/* Cart Icon & Live Counter Badge */}
