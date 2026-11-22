@@ -30,7 +30,7 @@ export const ProductCard = ({ product }) => {
         />
         <div className="absolute top-3 left-3">
           <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-white/90 backdrop-blur-sm text-slate-700 shadow-sm">
-            {product.category}
+            {typeof product.category === 'object' ? product.category?.name : product.category}
           </span>
         </div>
         {quantityInCart > 0 && (

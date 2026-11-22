@@ -1,97 +1,92 @@
-# TechStore - React E-Commerce Application
+# TechStore Full-Stack E-Commerce Project
 
-A clean, responsive e-commerce web application built with **React JS**, **Vite**, **React Router v6**, and **Tailwind CSS**. State management is handled with **React Context API**, with seamless **localStorage** persistence for cart items and auto-incrementing orders.
-
----
-
-## 🚀 Features
-
-- **Part 1: Product Catalog (`/`)**
-  - Displays 4 hardcoded flagship tech products (Laptop $650, Mouse $15, Keyboard $25, Monitor $120).
-  - Add to Cart button increases item count if already present in cart.
-  - Sticky header with live cart count badge.
-- **Part 2: Shopping Cart (`/cart`)**
-  - View cart with product image, unit price, quantity modifier (`-` and `+` with a minimum of 1), and line total.
-  - Remove items with a trash button.
-  - Sticky Order Summary panel (Subtotal, Delivery, Discount, Grand Total).
-  - Empty cart state with "Continue Shopping" link.
-  - "Proceed to Checkout" button disabled when cart is empty.
-- **Part 3: Checkout Page (`/checkout`)**
-  - Customer information form with required validation and inline error messages (Email format check, numeric phone check).
-  - Shipping method selector: **Free Shipping ($0, 7-20 days)** vs **Express Shipping ($9, 1-3 days)**.
-  - Live recalculation of Grand Total based on selected shipping option.
-  - Form submit is blocked until all required fields are valid.
-- **Part 4: Order Confirmation Page (`/order-confirmation`)**
-  - Order placed successfully screen.
-  - Auto-incrementing Order ID in `ORD-0001` format.
-  - Displays customer name, order date, order items (name, qty, price), total amount, and "Pending" status.
-  - Automatically redirects to `/` if accessed without an order.
-  - Printable invoice action and continue shopping button.
+A complete, modern full-stack e-commerce project built in 6 structured steps:
+- **Frontend**: React 18, Vite, React Router, Tailwind CSS, Lucide icons, Context API (`src/`).
+- **Backend**: Laravel 12 API, Eloquent ORM, FormRequest validation, API Resources (`ecommerce-api/`).
+- **Database**: MySQL database named `kh_qr`.
 
 ---
 
-## 🛠️ Getting Started
-
-### Prerequisites
-- Node.js (v18+ recommended)
-- npm or yarn
-
-### Installation & Run
-
-```bash
-# 1. Install dependencies
-npm install
-
-# 2. Run the development server
-npm run dev
-```
-
-The app will be available at `http://localhost:5173`.
-
-To build for production:
-```bash
-npm run build
-npm run preview
-```
+## 📑 Table of Contents
+1. [Project Overview & Architecture](#-project-overview--architecture)
+2. [Step 1: React UI + Database ERD](#-step-1-react-ui--erd-5-tables)
+3. [Step 2: Git & GitHub Workflow](#-step-2-push-ui-to-github)
+4. [Step 3: Laravel API (Products & Categories)](#-step-3-laravel-api-product-and-category)
+5. [Step 4: Database Seeders](#-step-4-database-seeders)
+6. [Step 5: Product API Documentation & Testing](#-step-5-product-api-testing)
+7. [Step 6: Frontend to API Connection](#-step-6-connect-api-to-frontend)
+8. [Running Both Servers](#-how-to-run-both-servers)
 
 ---
 
-## 📂 Project Structure
+## 🏗 Project Overview & Architecture
 
 ```text
 Connect_KH_qr/
-├── index.html
-├── package.json
-├── vite.config.js
-├── tailwind.config.js
-├── postcss.config.js
-├── README.md
-└── src/
-    ├── main.jsx                 # Application entry point
-    ├── App.jsx                  # Main router setup
-    ├── index.css                # Tailwind CSS imports & base styles
-    ├── data/
-    │   └── products.js          # Hardcoded product catalog
-    ├── context/
-    │   └── ShopContext.jsx      # Context API for cart, order & persistence
-    ├── components/
-    │   ├── Navbar.jsx           # Top navigation with live cart badge
-    │   ├── Footer.jsx           # Trust badges & footer information
-    │   ├── ProductCard.jsx      # Product card with Add-to-Cart logic
-    │   ├── CartItem.jsx         # Cart row with +/- quantity and remove
-    │   └── OrderSummary.jsx     # Sticky order summary breakdown
-    └── pages/
-        ├── ProductListPage.jsx  # Hero section & 4-card catalog
-        ├── CartPage.jsx         # Cart table & summary layout
-        ├── CheckoutPage.jsx     # Checkout form & shipping radio selection
-        └── OrderConfirmationPage.jsx # Success screen & invoice receipt
+├── .env.example                       # Frontend environment variables template
+├── index.html                         # React application entry HTML
+├── package.json                       # React dependencies & scripts
+├── vite.config.js                     # Vite build configuration (base path & plugins)
+├── tailwind.config.js                 # Tailwind CSS design system configuration
+├── src/
+│   ├── data/
+│   │   └── products.js                # Initial hardcoded store catalog (Step 1)
+│   ├── services/
+│   │   └── api.js                     # Axios client & API endpoints (Step 6)
+│   ├── context/
+│   │   └── ShopContext.jsx            # Cart & Order state with localStorage
+│   ├── components/
+│   │   ├── Navbar.jsx                 # Header with live item count badge
+│   │   ├── Footer.jsx                 # Brand trust props and links
+│   │   ├── ProductCard.jsx            # Product card with Add-to-Cart logic
+│   │   ├── CartItem.jsx               # Quantity modifier (- / +) and trash button
+│   │   └── OrderSummary.jsx           # Order summary with shipping & discounts
+│   └── pages/
+│       ├── ProductListPage.jsx        # Catalog with search, category pills & API loading
+│       ├── CartPage.jsx               # Cart table and sticky Order Summary
+│       ├── CheckoutPage.jsx           # Customer form, validation & shipping radio
+│       └── OrderConfirmationPage.jsx  # Order placed success screen (ORD-0001)
+│
+└── ecommerce-api/                     # Laravel 12 Backend API
+    ├── .env.example                   # Laravel environment variables template
+    ├── config/cors.php                # CORS configuration for http://localhost:5173
+    ├── app/
+    │   ├── Models/
+    │   │   ├── Category.php           # Eloquent Category (hasMany Product)
+    │   │   └── Product.php            # Eloquent Product (belongsTo Category)
+    │   ├── Http/
+    │   │   ├── Controllers/
+    │   │   │   ├── CategoryController.php # Category CRUD
+    │   │   │   └── ProductController.php  # Product CRUD, filters, search, pagination
+    │   │   ├── Requests/
+    │   │   │   ├── CategoryRequest.php    # FormRequest validation for Category
+    │   │   │   └── ProductRequest.php     # FormRequest validation for Product
+    │   │   └── Resources/
+    │   │       ├── CategoryResource.php   # JSON API Resource for Category
+    │   │       └── ProductResource.php    # JSON API Resource for Product
+    ├── database/
+    │   ├── migrations/
+    │   │   ├── 2026_01_01_000001_create_categories_table.php
+    │   │   └── 2026_01_01_000002_create_products_table.php
+    │   └── seeders/
+    │       ├── CategorySeeder.php     # Computers, Accessories, Displays
+    │       ├── ProductSeeder.php      # Laptop, Mouse, Keyboard, Monitor
+    │       └── DatabaseSeeder.php     # Master seeder registration
+    └── routes/
+        └── api.php                    # RESTful apiResource routes
 ```
 
 ---
 
-## 🗄️ PART 5: Database Design (ERD)
+## 📊 STEP 1: React UI + ERD (5 Tables)
 
-### Mermaid Entity-Relationship Diagram
+### 1A. React UI Specification
+- **Product List (`/`)**: Displays flagship products with "Add to Cart" button (increments quantity if already in cart). Sticky header displays a cart icon with live item-count badge. Includes live search bar and category filter pills.
+- **Cart Page (`/cart`)**: Lists each item with thumbnail image, name, unit price, quantity modifier (`-` / `+`, minimum 1), and line total. Trash button removes items. Sticky Order Summary displays Subtotal, Delivery, Discount, and Grand Total. Includes an empty-cart state with a "Continue Shopping" link and a disabled checkout button when cart is empty.
+- **Checkout Page (`/checkout`)**: Customer form fields (First Name, Last Name, Email, Phone Number, Street Address, City, State, Zip). Field validations enforce non-empty fields, valid email format regex (`^[^\s@]+@[^\s@]+\.[^\s@]+$`), and numeric phone numbers. Form submission is blocked until validation passes. Shipping radio selection recalculates Grand Total live (**Free Shipping $0** vs **Express Shipping $9**).
+- **Order Confirmation Page (`/order-confirmation`)**: Displays "Order Placed Successfully!", auto-incrementing Order ID in `ORD-0001` format, Customer Name, Order Date, Ordered Products table, Grand Total, and "Pending" status. Automatically empties the cart upon placement and redirects to `/` if accessed without an active order.
+
+### 1B. Database Design (Mermaid ERD)
 
 ```mermaid
 erDiagram
@@ -143,59 +138,250 @@ erDiagram
     }
 ```
 
-### Table Descriptions & Data Dictionary
+---
 
-#### 1. `CUSTOMERS`
-Stores buyer profile, communication contact, and default billing/shipping address.
-- `customer_id` (**PK**, `INT`, Auto Increment): Unique customer identifier.
-- `first_name` (`VARCHAR(100)`, NOT NULL): Customer first name.
-- `last_name` (`VARCHAR(100)`, NOT NULL): Customer last name.
-- `email` (`VARCHAR(255)`, NOT NULL, UNIQUE): Customer email address for order notifications.
-- `phone` (`VARCHAR(25)`, NOT NULL): Customer phone number for delivery contact.
-- `address` (`TEXT`, NOT NULL): Street address, city, state, postal code.
-- `created_at` (`TIMESTAMP`, DEFAULT CURRENT_TIMESTAMP): Account registration timestamp.
+## 🐙 STEP 2: Push UI to GitHub
 
-#### 2. `CATEGORIES`
-Defines grouping for store merchandise.
-- `category_id` (**PK**, `INT`, Auto Increment): Unique category identifier.
-- `name` (`VARCHAR(100)`, NOT NULL, UNIQUE): Category display name (e.g. Computers, Accessories, Peripherals, Displays).
+### Initial Repository Setup & Push
+```powershell
+# 1. Ensure .gitignore covers build artifacts and secrets
+# (node_modules, dist, .env, ecommerce-api/vendor, etc.)
 
-#### 3. `PRODUCTS`
-Catalog of merchandise available for purchase.
-- `product_id` (**PK**, `INT`, Auto Increment): Unique product identifier.
-- `category_id` (**FK**, `INT`, References `CATEGORIES(category_id)`): Foreign key linking product to its category.
-- `name` (`VARCHAR(255)`, NOT NULL): Product title.
-- `price` (`DECIMAL(10,2)`, NOT NULL): Current selling unit price in USD.
-- `stock` (`INT`, NOT NULL, DEFAULT 0): Available stock quantity.
-- `image` (`VARCHAR(500)`): URL path or asset key to product thumbnail image.
+# 2. Initialize git repository
+git init
 
-#### 4. `ORDERS`
-Header table recording placed customer orders.
-- `order_id` (**PK**, `INT`, Auto Increment): Unique order identifier (rendered as `ORD-XXXX`).
-- `customer_id` (**FK**, `INT`, References `CUSTOMERS(customer_id)`): Foreign key to the purchasing customer.
-- `order_date` (`TIMESTAMP`, DEFAULT CURRENT_TIMESTAMP): Timestamp when checkout was completed.
-- `shipping_method` (`VARCHAR(50)`, NOT NULL): Selected delivery method ("Free Shipping" or "Express Shipping").
-- `shipping_fee` (`DECIMAL(10,2)`, NOT NULL): Cost of shipping ($0.00 or $9.00).
-- `total_amount` (`DECIMAL(10,2)`, NOT NULL): Final grand total (`Subtotal + shipping_fee - discounts`).
-- `status` (`VARCHAR(30)`, NOT NULL, DEFAULT 'Pending'): Order fulfillment status (`Pending`, `Processing`, `Shipped`, `Delivered`, `Cancelled`).
+# 3. Stage all source files and commit
+git add .
+git commit -m "Initial commit: React shopping UI"
 
-#### 5. `ORDER_ITEMS`
-Line item junction table capturing the exact products, historical unit prices, and quantities per order.
-- `order_item_id` (**PK**, `INT`, Auto Increment): Unique order item row identifier.
-- `order_id` (**FK**, `INT`, References `ORDERS(order_id)` ON DELETE CASCADE): Foreign key linking line item to the parent order.
-- `product_id` (**FK**, `INT`, References `PRODUCTS(product_id)`): Foreign key linking to the purchased product.
-- `quantity` (`INT`, NOT NULL, CHECK `quantity > 0`): Number of units purchased.
-- `unit_price` (`DECIMAL(10,2)`, NOT NULL): Historical price at time of order placement.
+# 4. Set branch to main and add GitHub remote
+git branch -M main
+git remote add origin https://github.com/Phanet9531/KH_QR.git
+
+# 5. Push to GitHub
+git push -u origin main
+```
+
+### Feature Branch & Pull Request (PR) Workflow
+For subsequent features (e.g. adding Laravel backend or API integration):
+```powershell
+# 1. Create and switch to a feature branch
+git checkout -b feature/laravel-api-integration
+
+# 2. Make your edits and commit
+git add .
+git commit -m "feat: Add Laravel product API with MySQL seeders"
+
+# 3. Push feature branch to GitHub
+git push -u origin feature/laravel-api-integration
+
+# 4. Open Pull Request on GitHub
+# Navigate to https://github.com/Phanet9531/KH_QR/pull/new/feature/laravel-api-integration
+# Review diff, assign reviewers, and merge into 'main'
+```
 
 ---
 
-### Entity Relationships
-- **Customers 1-N Orders (`CUSTOMERS ||--o{ ORDERS`)**: One customer can place zero or many orders over time. Each order belongs to exactly one customer.
-- **Categories 1-N Products (`CATEGORIES ||--o{ PRODUCTS`)**: One category groups multiple products. Each product belongs to one primary category.
-- **Orders 1-N Order_Items (`ORDERS ||--|{ ORDER_ITEMS`)**: One order consists of one or more order line items. If an order is deleted, its items are cascaded.
-- **Products 1-N Order_Items (`PRODUCTS ||--o{ ORDER_ITEMS`)**: A product can appear across multiple order line items in different customer orders.
-#   K H _ Q R  
- #   K H _ Q R  
- #   K H _ Q R  
- #   K H _ Q R  
- 
+## ⚡ STEP 3: Laravel API (Product and Category)
+
+### 1. Create Project & Configure Database
+```powershell
+composer create-project laravel/laravel ecommerce-api
+cd ecommerce-api
+```
+
+In `ecommerce-api/.env`, configure MySQL database `kh_qr`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=kh_qr
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### 2. Enable CORS
+File: `ecommerce-api/config/cors.php`
+```php
+'paths' => ['api/*', 'sanctum/csrf-cookie'],
+'allowed_origins' => ['http://localhost:5173', 'http://127.0.0.1:5173'],
+'allowed_methods' => ['*'],
+'allowed_headers' => ['*'],
+'supports_credentials' => true,
+```
+
+### 3. Routes
+File: `ecommerce-api/routes/api.php`
+```php
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
+use Illuminate\Support\Facades\Route;
+
+Route::apiResource('categories', CategoryController::class);
+Route::apiResource('products', ProductController::class);
+```
+
+---
+
+## 🌱 STEP 4: Database Seeders
+
+### Run Migration and Seeders
+Ensure MySQL service is started (e.g. via XAMPP), then run:
+```powershell
+cd ecommerce-api
+php artisan migrate:fresh --seed
+```
+
+### Seeded Catalog Data:
+- **Categories**:
+  - `1`: Computers
+  - `2`: Accessories
+  - `3`: Displays
+- **Products**:
+  - `1`: Laptop — **$650.00** (Computers, Stock: 15)
+  - `2`: Mouse — **$15.00** (Accessories, Stock: 50)
+  - `3`: Keyboard — **$25.00** (Accessories, Stock: 35)
+  - `4`: Monitor — **$120.00** (Displays, Stock: 20)
+
+---
+
+## 🔍 STEP 5: Product API Testing
+
+### Endpoints Overview
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/api/categories` | Retrieve all categories with `products_count` |
+| `GET` | `/api/categories/{id}` | Retrieve single category with its products |
+| `POST` | `/api/categories` | Create category (`name` required, unique) |
+| `PUT` | `/api/categories/{id}` | Update category |
+| `DELETE` | `/api/categories/{id}` | Delete category |
+| `GET` | `/api/products` | Retrieve products with `category` eager loaded, search, filter, pagination |
+| `GET` | `/api/products/{id}` | Retrieve single product with its category |
+| `POST` | `/api/products` | Create product (validated with `ProductRequest`) |
+| `PUT` | `/api/products/{id}` | Update product |
+| `DELETE` | `/api/products/{id}` | Delete product |
+
+### Example 1: Get Products with Category Eager Loading
+**Request:**
+```bash
+curl -X GET http://localhost:8000/api/products -H "Accept: application/json"
+```
+
+**Response (`200 OK`):**
+```json
+{
+  "status": "success",
+  "message": "Products retrieved successfully",
+  "data": [
+    {
+      "id": 1,
+      "name": "Laptop",
+      "price": 650,
+      "stock": 15,
+      "image": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=600&q=80",
+      "category_id": 1,
+      "category": {
+        "id": 1,
+        "name": "Computers"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Mouse",
+      "price": 15,
+      "stock": 50,
+      "image": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=600&q=80",
+      "category_id": 2,
+      "category": {
+        "id": 2,
+        "name": "Accessories"
+      }
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "last_page": 1,
+    "per_page": 10,
+    "total": 4
+  }
+}
+```
+
+### Example 2: Filter by Category & Search
+```bash
+# Filter products belonging to Accessories (id: 2)
+curl -X GET "http://localhost:8000/api/products?category_id=2"
+
+# Search for "keyboard"
+curl -X GET "http://localhost:8000/api/products?search=keyboard"
+```
+
+### Example 3: Validation Error Format
+```bash
+curl -X POST http://localhost:8000/api/products \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"name": "Webcam"}'
+```
+**Response (`422 Unprocessable Content`):**
+```json
+{
+  "message": "Please select a valid category. (and 1 more error)",
+  "errors": {
+    "category_id": ["Please select a valid category."],
+    "price": ["Product price is required."]
+  }
+}
+```
+
+---
+
+## 🔌 STEP 6: Connect API to Frontend
+
+### 1. Frontend Environment Setup
+Create `.env` in the root folder:
+```env
+VITE_API_URL=http://localhost:8000/api
+```
+
+### 2. API Service Layer
+File: `src/services/api.js`
+- Created using `axios` with base URL configured from `import.meta.env.VITE_API_URL`.
+- Provides `getProducts(params)`, `getProductById(id)`, and `getCategories()`.
+- Incorporates graceful offline fallback: if backend is unreachable, the store safely falls back to local data so the UI remains fully functional.
+
+### 3. Integrated Catalog UI
+File: `src/pages/ProductListPage.jsx`
+- Fetches real categories from `/api/categories` to build interactive category filter pills.
+- Fetches live products from `/api/products` with loading spinners and error alerts.
+- Live search query input with automatic debouncing.
+- Seamlessly feeds the API product ID and price into the persistent Context API Cart, Checkout, and Confirmation receipt.
+
+---
+
+## 🚀 How to Run Both Servers
+
+### Terminal 1: Start Laravel Backend Server
+```powershell
+cd ecommerce-api
+php artisan serve --port=8000
+```
+Backend API will be running at `http://localhost:8000/api`.
+
+### Terminal 2: Start React Frontend Development Server
+```powershell
+npm install
+npm run dev
+```
+Frontend will be running at `http://localhost:5173`.
+
+### 🛡 Troubleshooting CORS:
+If you see a `CORS error` in your browser console:
+1. Verify `config/cors.php` in `ecommerce-api` includes `'allowed_origins' => ['http://localhost:5173', 'http://127.0.0.1:5173']`.
+2. Clear the Laravel configuration cache:
+   ```powershell
+   cd ecommerce-api
+   php artisan config:clear
+   ```
+3. Refresh `http://localhost:5173`.

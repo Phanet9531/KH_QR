@@ -1,16 +1,26 @@
+# Node & Vite
+node_modules
+dist
+dist-ssr
+*.local
+.env
+
+# PHP & Laravel Backend
+ecommerce-api/vendor
+ecommerce-api/.env
+ecommerce-api/database/database.sqlite
+ecommerce-api/storage/*.key
+ecommerce-api/storage/logs/*.log
+ecommerce-api/storage/framework/cache/*
+ecommerce-api/storage/framework/sessions/*
+ecommerce-api/storage/framework/views/*
+
 # Logs
 logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
 
 # Editor directories and files
 .vscode/*

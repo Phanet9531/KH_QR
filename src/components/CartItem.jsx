@@ -28,7 +28,7 @@ export const CartItem = ({ item }) => {
         />
         <div className="min-w-0">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-indigo-600">
-            {item.category || 'Tech'}
+            {typeof item.category === 'object' ? item.category?.name : (item.category || 'Tech')}
           </span>
           <h4 className="text-base font-bold text-slate-900 truncate">{item.name}</h4>
           <p className="text-sm font-semibold text-slate-500 mt-0.5">
