@@ -39,6 +39,17 @@ export const Navbar = () => {
               Products
             </Link>
 
+            <Link
+              to="/admin"
+              className={`px-3 py-2 text-sm font-semibold rounded-lg transition ${
+                location.pathname === '/admin'
+                  ? 'text-indigo-600 bg-indigo-50'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              Admin
+            </Link>
+
             {/* Cart Icon & Live Counter Badge */}
             <Link
               to="/cart"
