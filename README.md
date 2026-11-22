@@ -195,4 +195,5 @@ Line item junction table capturing the exact products, historical unit prices, a
 - **Orders 1-N Order_Items (`ORDERS ||--|{ ORDER_ITEMS`)**: One order consists of one or more order line items. If an order is deleted, its items are cascaded.
 - **Products 1-N Order_Items (`PRODUCTS ||--o{ ORDER_ITEMS`)**: A product can appear across multiple order line items in different customer orders.
 #   K H _ Q R  
+ #   K H _ Q R  
  
